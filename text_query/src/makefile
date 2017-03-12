@@ -1,4 +1,4 @@
-target=text_query
+target = text_query
 
 #path=/home/ming/project
 path := $(shell pwd)
@@ -17,8 +17,7 @@ queryhead := $(HeadPath)/text_query.h
 all:$(queryobj)
 	$(GG) $(queryobj) -o $(target)
 
-queryobj:$(querysrc) $(queryhead)
-	echo $(path)
+$(queryobj):$(querysrc) $(queryhead)
 	$(GG) $(FLAGS) -I $(HeadPath) -c $(querysrc) -o $(queryobj) 
 
 .PHONY:clean
