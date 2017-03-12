@@ -68,6 +68,11 @@
 
 #c
 
+#pakage file
+
+*.tar
+*.gz
+
 # Prerequisites
 
 *.d
