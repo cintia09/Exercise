@@ -12,7 +12,7 @@ typedef int typeDef;
 
 void front_stack_push(dqueM<typeDef> &obj, typeDef n)
 {
-	//obj.push_front(n);
+	obj.push_front(n);
 	obj.push_back(n);
 }
 

@@ -84,7 +84,9 @@ void dqueM<T>::free()
 	if (elements != nullptr)
 	{
 		for (auto p = data_front; p != free_rear; )
+		{
 			alloc.destroy(p++);
+		}
 		alloc.deallocate(elements, endq - elements);
 	}
 }
@@ -178,17 +180,17 @@ T dqueM<T>::pop_front()
 template <typename T>
 void dqueM<T>::reallocate(size_t offset_front, size_t offset_rear)
 {
-	auto first = alloc.allocate(offset_front + size() + offset_rear);
+	auto s = size();
+	auto first = alloc.allocate(offset_front + s + offset_rear);
 	auto last = uninitialized_copy(make_move_iterator(begin()),
 									make_move_iterator(end()),
 									first + offset_front);
 	
-	cout << endl << "HHHHIII" << offset_front << offset_rear << elements << free_rear << endl;
 	free();
 	elements = first;
 	data_front = first + offset_front;
-	free_rear = last - offset_rear;
-	endq = last;
+	free_rear = data_front + s;
+	endq = first + offset_front + s + offset_rear;
 }
 
 #endif
