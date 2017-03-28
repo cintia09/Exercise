@@ -12,7 +12,8 @@ typedef int typeDef;
 
 void front_stack_push(dqueM<typeDef> &obj, typeDef n)
 {
-	obj.push_front(n);
+	//obj.push_front(n);
+	obj.push_back(n);
 }
 
 typeDef front_stack_pop(dqueM<typeDef> &obj)
@@ -28,16 +29,26 @@ int main(void)
 	typeDef n;
 
 	cout << "Please enter number: " << endl;
-	while (cin >> n)
+	for (n = 0;n < 100;++n)
 	{
+		cout << n << " ";
 		front_stack_push(que, n);
 	}
 
+	cout << endl;
+
+	dqueM<typeDef> que1;
+	que1 = std::move(que);
 
 	cout << "The sequence is: " << endl;
-	for (auto &m: que)
-		cout << m << " ";
+	
+	for (auto &m: que1)
+	{
+		cout << front_stack_pop(que1) << " ";
+	}
 	cout << endl;
+
+	front_stack_pop(que);
 	return 0;
 }
 

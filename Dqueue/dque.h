@@ -65,7 +65,7 @@ template <typename T>
 pair<T*, T*> dqueM<T>::copy_n_obj(const T *start, const T *end)
 {
 	auto ptr = alloc.allocate(end - start);
-	return pair<T*, T*>(ptr, uninitialazed_copy(start, end, ptr));
+	return pair<T*, T*>(ptr, uninitialized_copy(start, end, ptr));
 }
 
 template <typename T>
@@ -92,11 +92,9 @@ void dqueM<T>::free()
 template <typename T>
 dqueM<T>::dqueM(const dqueM<T> &obj)
 {
-	auto newdata = copy_n_obj(obj.begin(), obj.endq());
-	elements = newdata.first;
-	endq = newdata.second;
-	data_front = elements + (obj.data_front - obj.elements);
-	free_rear = elements + (obj.free_rear - obj.elements);
+	auto newdata = copy_n_obj(obj.begin(), obj.end());
+	elements = data_front = newdata.first;
+	endq = free_rear = newdata.second;
 }
 
 template <typename T>
@@ -183,7 +181,9 @@ void dqueM<T>::reallocate(size_t offset_front, size_t offset_rear)
 	auto first = alloc.allocate(offset_front + size() + offset_rear);
 	auto last = uninitialized_copy(make_move_iterator(begin()),
 									make_move_iterator(end()),
-			 						first + offset_front);
+									first + offset_front);
+	
+	cout << endl << "HHHHIII" << offset_front << offset_rear << elements << free_rear << endl;
 	free();
 	elements = first;
 	data_front = first + offset_front;
