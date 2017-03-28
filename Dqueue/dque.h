@@ -10,6 +10,7 @@
 
 #include<iostream>
 #include<memory>
+#include<utility>
 using namespace std;
 
 #define EXPEND_RATE 2
@@ -18,18 +19,17 @@ template <typename T>
 class dqueM
 {
 	public:
-		friend void swap(dqueM&, dqueM&);
-		dqueM(): elements(nullptr), data_front(nullptr), free_rear(nullptr), end(nullptr) {};
-		dqueM(const dqueM&);
-		dqueM(dqueM &&) noexcept;
-		dqueM &operator=(dqueM) &;
+		dqueM(): elements(nullptr), data_front(nullptr), free_rear(nullptr), endq(nullptr) {};
+		dqueM(const dqueM<T>&);
+		dqueM(dqueM<T> &&) noexcept;
+		dqueM<T> &operator=(dqueM<T>) &;
 
 		T *begin() const{return data_front;}
 		T *end() const{return free_rear;}
 		size_t size() const{return free_rear - data_front;}
 		size_t front_cap() const{return data_front - elements;}
-		size_t rear_cap() const{return end - free_rear;}
-		size_t capbility() const{return end - elements;}
+		size_t rear_cap() const{return endq - free_rear;}
+		size_t capbility() const{return endq - elements;}
 
 		T *push_back(const T&, size_t n = 1) &;
 		T *push_back(T&&, size_t n = 1) &;
@@ -44,17 +44,18 @@ class dqueM
 		static allocator<T> alloc;
 		pair<T*, T*> copy_n_obj(const T*, const T*);
 		void check_front_alloc(size_t n) {if (front_cap() < n) reallocate((n > EXPEND_RATE*size() ? (EXPEND_RATE*n) : EXPEND_RATE*size()), rear_cap());}
-		void check_rear_alloc(size_t n) {if (rear_cap() < n) reallocate(front_cap(), (n > EXPEND_RATE*size() ? (EXPEND_RATE*n) : EXPEND_RATE*size()))}
+		void check_rear_alloc(size_t n) {if (rear_cap() < n) reallocate(front_cap(), (n > EXPEND_RATE*size() ? (EXPEND_RATE*n) : EXPEND_RATE*size()));}
 		void reallocate(size_t, size_t);
 		size_t is_empty(void) {return !size();}
 
+		inline void swap(dqueM<T>&, dqueM<T>&);
 		void free(void);
 
 		T *elements;
 		T *data_front;
 		T *free_rear;
-		T *end;
+		T *endq;
 						
-}
+};
 
 #endif

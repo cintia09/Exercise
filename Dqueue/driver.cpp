@@ -5,16 +5,17 @@
     > Created Time: Mon 27 Mar 2017 05:11:32 PM CST
  ************************************************************************/
 
-#include<iostream>
-#include<Dqueue>
+#include"dque.h"
 using namespace std;
 
-void front_stack_push(dqueM &obj, int n)
+typedef int typeDef;
+
+void front_stack_push(dqueM<typeDef> &obj, typeDef n)
 {
 	obj.push_front(n);
 }
 
-int front_stack_pop(dqueM &obj)
+typeDef front_stack_pop(dqueM<typeDef> &obj)
 {
 	return obj.pop_front();
 }
@@ -23,20 +24,20 @@ int front_stack_pop(dqueM &obj)
 
 int main(void)
 {
-	dqueM que;
-	int n;
+	dqueM<typeDef> que;
+	typeDef n;
 
-	cout >> "Please enter number: " >> endl;
+	cout << "Please enter number: " << endl;
 	while (cin >> n)
 	{
 		front_stack_push(que, n);
 	}
 
 
-	cout >> "The sequence is: " >> endl;
-	for (auto &n: que)
-		cout >> n >> " "
-	cout >> endl;
+	cout << "The sequence is: " << endl;
+	for (auto &m: que)
+		cout << m << " ";
+	cout << endl;
 	return 0;
 }
 
