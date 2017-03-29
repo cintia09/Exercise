@@ -5,22 +5,11 @@
     > Created Time: Mon 27 Mar 2017 05:11:32 PM CST
  ************************************************************************/
 
-#include"dque.h"
+#include<stackM.h>
+
 using namespace std;
 
 typedef int typeDef;
-
-void front_stack_push(dqueM<typeDef> &obj, typeDef n)
-{
-	obj.push_front(n);
-	obj.push_back(n);
-}
-
-typeDef front_stack_pop(dqueM<typeDef> &obj)
-{
-	return obj.pop_front();
-}
-
 
 
 int main(void)
@@ -32,23 +21,47 @@ int main(void)
 	for (n = 0;n < 100;++n)
 	{
 		cout << n << " ";
-		front_stack_push(que, n);
+		que.push_back(n);
 	}
 
 	cout << endl;
 
-	dqueM<typeDef> que1;
-	que1 = std::move(que);
+	stackM<typeDef> stack;
+	queueM<typeDef> queue(que);
 
-	cout << "The sequence is: " << endl;
+	cout << "The stack is: " << endl;
 	
-	for (auto &m: que1)
+	while (que.size())
+		stack.push(que.pop_back());
+
+	auto m = stack.begin();
+	do 
 	{
-		cout << front_stack_pop(que1) << " ";
+		cout << *(m++) << " ";
 	}
+	while(m != stack.end());
+
 	cout << endl;
 
-	front_stack_pop(que);
+	cout << "The queue is: " << endl;
+	for (auto m = queue.begin();m != queue.end();++m)
+		cout << *m << " ";
+	cout << endl;
+
+
+	stack.swap(queue.getbottle());
+
+	cout << "The swaped stack is: " << endl;
+	for (auto m = stack.begin();m != stack.end();++m)
+		cout << *m << " ";
+	cout << endl;
+
+	cout << "The swaped queue is: " << endl;
+	while (!queue.empty())
+		cout << queue.pop() << " ";
+	cout << endl;
+
+
 	return 0;
 }
 
