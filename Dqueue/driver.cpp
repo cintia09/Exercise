@@ -13,12 +13,14 @@ typedef int typeDef;
 void front_stack_push(dqueM<typeDef> &obj, typeDef n)
 {
 	obj.push_front(n);
+	obj.push_front(200);
 	obj.push_back(n);
+	obj.push_back(100);
 }
 
 typeDef front_stack_pop(dqueM<typeDef> &obj)
 {
-	return obj.pop_front();
+	return obj.pop_back();
 }
 
 
@@ -38,7 +40,7 @@ int main(void)
 	cout << endl;
 
 	dqueM<typeDef> que1;
-	que1 = std::move(que);
+	que1 = que;
 
 	cout << "The sequence is: " << endl;
 	
