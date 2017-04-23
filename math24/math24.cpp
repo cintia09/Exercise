@@ -112,7 +112,6 @@ maxtren::maxtren(const int number[])
 			if (v1 != v2)
 			{
 				auto m = v2->begin();
-				cout << "v1: " << (v1->begin())->mathp->l << ", " << (v1->begin())->mathp->r << ". v2: " << m->mathp->l << ", " << m->mathp->r << endl;
 				if ((v1->begin())->mathp->l == m->mathp->l 
 						|| (v1->begin())->mathp->l == m->mathp->r
 						|| (v1->begin())->mathp->r == m->mathp->l

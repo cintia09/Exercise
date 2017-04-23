@@ -14,10 +14,13 @@
 using namespace std;
 
 #define EXPEND_RATE 2
+template <typename, typename> class stackM;
+template <typename, typename> class queueM;
 
 template <typename T>
 class dqueM
 {
+	friend class stackM<T, dqueM>;
 	public:
 		dqueM(): elements(nullptr), data_front(nullptr), free_rear(nullptr), endq(nullptr) {};
 		dqueM(const dqueM&);
