@@ -14,33 +14,28 @@
 #include<string>
 using namespace std;
 
-
 class mathbase
 {
 	friend class math;
 	public:
 		mathbase() {}
-		mathbase(const int v, const string &s, int lv = 0, int rv = 0): value(v), str(s), l(lv), r(rv) {}
+		mathbase(const int v, const string &s): value(v), str(s) {}
 		virtual int evalue(const int) const {return value;}
+		
 		int value;
 		string str;
-		int l, r;
 };
 
 class math
 {
 	public:
-		math(shared_ptr<mathbase> m):mathp(m) {};
+		math(shared_ptr<mathbase> m, int in1 = -1, int in2 = -1, int in3 = -1): mathp(m), index[0](in1), index[1](in2), index[2](in3) {};
 		int evalue(const int value = 0) const {return mathp->evalue(value);}
 		shared_ptr<mathbase> mathp;
+		shared_ptr<math> next;
+		int index[3];
 };
 
-class mathdouble: public mathbase
-{
-	public:
-		mathdouble() {}
-		mathdouble(const int lv, const int rv, const int v, const string &s):mathbase::mathbase(v, s, lv, rv){}
-};
 
 class mathadd: public mathbase
 {
@@ -55,7 +50,7 @@ class mathdec: public mathbase
 	public:
 		mathdec() {}
 		mathdec(const int v, const string &s): mathbase::mathbase(v, s) {}
-		int evalue(const int v) const {return v - mathbase::value;}
+		int evalue(const int v) const {return (v - value) < 0 ? -1 : (v - value);}
 };
 
 class mathpuls: public mathbase
@@ -63,7 +58,7 @@ class mathpuls: public mathbase
 	public:
 		mathpuls() {}
 		mathpuls(const int v, const string &s): mathbase::mathbase(v, s) {}
-		int evalue(const int v) const {return v * mathbase::value;}
+		int evalue(const int v) const {return v * value;}
 };
 
 class mathdev: public mathbase
@@ -71,14 +66,63 @@ class mathdev: public mathbase
 	public:
 		mathdev() {}
 		mathdev(const int v, const string &s): mathbase::mathbase(v, s) {}
-		int evalue(const int v) const {return v / mathbase::value;}
+		int evalue(const int v) const {return (v % value) == 0 ? (v / value) : -1;}
+};
+
+class mathdoubleadd: public mathbase
+{
+	public:
+		mathdoubleadd(const string &s, const int n = 1; const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), index[0](va), index[1](va), index[2](vc), number(n) {}
+		int search();
+		int evalue(const int v) const {return v + value;}
+
+		stackM<math> mstack;
+		int index[3];
+		int number;
+};
+
+class mathdoubledec: public mathbase
+{
+	public:
+		mathdoubledec(const string &s, const int n = 1; const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), index[0](va), index[1](va), index[2](vc), number(n) {}
+		int search();
+		int evalue(const int v) const {return (v - value) < 0 ? -1 : (v - value);}
+		
+		stackM<math> mstack;
+		int index[3];
+		int number;
+};
+
+class mathdoublepuls: public mathbase
+{
+	public:
+		mathdoublepuls(const string &s, const int n = 1; const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), index[0](va), index[1](va), index[2](vc), number(n) {}
+		int search();
+		int evalue(const int v) const {return v * value;}
+	
+		stackM<math> mstack;
+		int index[3];
+		int number;
+};
+
+class mathdoubledev: public mathbase
+{
+	public:
+		mathdoubledev(const string &s, const int n = 1; const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), index[0](va), index[1](va), index[2](vc), number(n) {}
+		int search();
+		int evalue(const int v) const {return (v % value) == 0 ? (v / value) : -1;}
+
+		stackM<math> mstack;
+		int index[3];
+		int number;
 };
 
 class maxtren
 {
 	public:
 		maxtren(const int []);
-		vector<vector<math>> vec;                                                                              
+		//vector<vector<math>> vec;     
+		math mathp[100];
 };
 
 

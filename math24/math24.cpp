@@ -8,7 +8,8 @@
 #include<iostream>
 #include"math24.h"
 using namespace std;
- 
+
+/*
 maxtren::maxtren(const int number[])
 {
 	int i, j, k;
@@ -125,11 +126,67 @@ maxtren::maxtren(const int number[])
 				v1->push_back(math(shared_ptr<mathdev>(new mathdev(m->evalue(), string(" / (" + m->mathp->str + ")")))));
 			}
 }
+*/
 
 //vector<string> search(maxtren &max)
 //{
 
 //}
+
+maxtren::maxtren(const int number[])
+{
+	int i, j, k, l, m, flag;
+	char c[20];
+	shared_ptr<math> shadow;
+
+	for (i = 0;i < 4;++i)
+	{
+		sprintf(c, "%d", number[i]);
+		string s(c);
+		mathp[i] = math(shared_ptr<mathbase>(new mathase), i);
+	}
+
+	k = i;
+
+	for (i = 0;i < 4;++i)
+		for (j = 0;j < 4;++j)
+			if (i != j)
+			{
+				mathp[k++] = math(shared_ptr<mathbase>(new mathbase), i, j);
+				for (l = 0;l < 4;++l)
+					if (i != l && j != l)
+						mathp[k++] = math(shared_ptr<mathbase>(new mathbase), i, j, l);
+	
+	for (i = 0;i < k;++i)
+	{
+		shadow = mathp[i];
+ 		for (j = 0;j < k;++j)
+		{
+			flag = 0;
+			for (l = 0;l < 3;++l)
+				for (m = 0;m < 3;++m)
+					if (mathp[i].index[l] == mathp[j].index[m])
+					{
+						flag = 1;
+						break;
+					}
+			
+			if (flag)
+				continue;
+			if (j < 4)
+			{
+				shadow->next = make_shared<math>(shared_ptr<mathadd>(new mathadd(number[j])), j);
+				shadow = shadow->next;
+				shadow->next = make_shared<math>(shared_ptr<mathdec>(new mathdec(number[j])), j);
+				shadow = shadow->next;
+				shadow->next = make_shared<math>(shared_ptr<mathpuls>(new mathpuls(number[j])), j);
+				shadow = shadow->next;
+				shadow->next = make_shared<math>(shared_ptr<mathdev>(new mathdev(number[j])), j);
+				shadow = shadow->next;
+			}
+		}
+	}
+}
 
 int main()
 {
