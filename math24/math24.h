@@ -29,11 +29,13 @@ class mathbase
 class math
 {
 	public:
-		math(shared_ptr<mathbase> m, int in1 = -1, int in2 = -1, int in3 = -1): mathp(m), index[0](in1), index[1](in2), index[2](in3) {};
+		math() {}
+		math(shared_ptr<mathbase> m, int n = 1, int in1 = -1, int in2 = -1, int in3 = -1): mathp(m), next(nullptr) {index[0] = in1; index[1]=in2; index[2]=in3;}
 		int evalue(const int value = 0) const {return mathp->evalue(value);}
 		shared_ptr<mathbase> mathp;
 		shared_ptr<math> next;
 		int index[3];
+		int number;
 };
 
 
@@ -72,11 +74,11 @@ class mathdev: public mathbase
 class mathdoubleadd: public mathbase
 {
 	public:
-		mathdoubleadd(const string &s, const int n = 1; const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), index[0](va), index[1](va), index[2](vc), number(n) {}
+		mathdoubleadd(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), number(n) {index[0]=va; index[1]=vb;index[2]=vc;}
 		int search();
 		int evalue(const int v) const {return v + value;}
 
-		stackM<math> mstack;
+		//stackM<math> mstack;
 		int index[3];
 		int number;
 };
@@ -84,11 +86,11 @@ class mathdoubleadd: public mathbase
 class mathdoubledec: public mathbase
 {
 	public:
-		mathdoubledec(const string &s, const int n = 1; const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), index[0](va), index[1](va), index[2](vc), number(n) {}
+		mathdoubledec(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), number(n) {index[0]=va;index[1]=vb;index[2]=vc;}
 		int search();
 		int evalue(const int v) const {return (v - value) < 0 ? -1 : (v - value);}
 		
-		stackM<math> mstack;
+		//stackM<math> mstack;
 		int index[3];
 		int number;
 };
@@ -96,11 +98,11 @@ class mathdoubledec: public mathbase
 class mathdoublepuls: public mathbase
 {
 	public:
-		mathdoublepuls(const string &s, const int n = 1; const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), index[0](va), index[1](va), index[2](vc), number(n) {}
+		mathdoublepuls(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), number(n) {index[0]=va;index[1]=vb;index[2]=vc;}
 		int search();
 		int evalue(const int v) const {return v * value;}
 	
-		stackM<math> mstack;
+		//stackM<math> mstack;
 		int index[3];
 		int number;
 };
@@ -108,11 +110,11 @@ class mathdoublepuls: public mathbase
 class mathdoubledev: public mathbase
 {
 	public:
-		mathdoubledev(const string &s, const int n = 1; const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), index[0](va), index[1](va), index[2](vc), number(n) {}
+		mathdoubledev(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), number(n) {index[0]=va;index[1]=vb;index[2]=vc;}
 		int search();
 		int evalue(const int v) const {return (v % value) == 0 ? (v / value) : -1;}
 
-		stackM<math> mstack;
+		//stackM<math> mstack;
 		int index[3];
 		int number;
 };
