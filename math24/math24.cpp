@@ -143,7 +143,7 @@ maxtren::maxtren(const int number[])
 	{
 		sprintf(c, "%d", i);
 		string s(c);
-		mathp[i] = math(shared_ptr<mathbase>(new mathbase), s, 1, i);
+		mathp[i] = math(shared_ptr<mathbase>(new mathbase(number[i], s)), s, 1, i);
 		//cout << "mathp[" << i << "]=" << mathp[i].number << endl;
 	}
 
@@ -239,6 +239,90 @@ maxtren::maxtren(const int number[])
 			}
 		}
 	}
+}
+
+int mathdoublebase::search()
+{
+	int i, ret, node[100] = {0};
+	string s;
+	stackM<string> sstack;
+
+	ret = max.mathp[index[0]];
+}
+
+vector<string> search(maxtren &max)
+{
+	int i, ret;
+	vector<string> vec;
+	stackM<shared_ptr<math>> stack;
+	
+	for (i = 0;i < 4;++i)
+	{
+		int node[100] = {0};
+		stackM<string> sstack;
+		string s;
+		
+		ret = max.mathp[i].evalue();
+		stack.push(max.mathp[i]->next);
+		//sstack.push(max.mathp[i].mathp->str);
+
+		while (!stack.empty())
+		{
+			auto ptr = stack.pop();
+			if (!sstack.empty())
+				sstack.pop();
+
+			while (1)
+			{
+				while ((ptr != nullptr ) && ((ret = ptr->evalue(ret)) == -1))
+					ptr = ptr->next;
+
+				while (ptr != nullptr && node[ptr->index[0]])
+					ptr = ptr->next;
+
+				if (ptr == nullptr)
+				{
+					if (ret == 24)
+					{
+						while (!sstack.empty())
+							s = sstack.pop() + s;
+						vec.push_back(max.mathp[i].mathp->str + s);
+					}
+					break;
+				}
+
+				//sstack.push(ptr->mathp->str);
+
+				if (ptr->mathp->number == 1)
+				{
+					stack.push(ptr->next);
+					node[ptr->index[0]] = 1;
+					//s = s + ptr->mathp->str;
+					sstack.push(ptr->mathp->str);
+				}
+				else
+				{
+					stack.push(ptr);
+					//s = s + "(" + ptr->mathp->str + ")";
+					sstack.push("(" + ptr->mathp->str + ")");
+				}
+				
+				/*
+				if (ptr->index[0] == -1)
+				{
+					if (ret == 24)
+						vec.push_back(string(max.mathp[i].mathp->str + s));
+					break;
+				}
+				*/
+
+				//s = s + ptr->mathp->str;
+				ptr = max.mathp[ptr->index[0]].next;
+			}
+		}
+	}
+
+	return vec;
 }
 
 int main(void)
