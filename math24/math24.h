@@ -74,52 +74,63 @@ class mathdev: public mathbase
 		int evalue(const int v) const {return (v % value) == 0 ? (v / value) : -1;}
 };
 
-class mathdoubleadd: public mathbase
+class mathdoublebase
 {
 	public:
-		mathdoubleadd(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), number(n) {index[0]=va; index[1]=vb;index[2]=vc;}
+		mathdoublebase() {}
+		mathdoublebase(const string &s, const int n, const int va, const int vb, const int vc): number(n) {index[0] = va; index[1] = vb; index[2] = vc;}
 		int search();
+		stackM<math> mstack;
+		int index[3];
+		int number;
+};
+
+class mathdoubleadd: public mathbase, public mathdoublebase
+{
+	public:
+		mathdoubleadd(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
+		//int search();
 		int evalue(const int v) const {return v + value;}
 
-		stackM<math> mstack;
-		int index[3];
-		int number;
+		//stackM<math> mstack;
+		//int index[3];
+		//int number;
 };
 
-class mathdoubledec: public mathbase
+class mathdoubledec: public mathbase, public mathdoublebase
 {
 	public:
-		mathdoubledec(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), number(n) {index[0]=va;index[1]=vb;index[2]=vc;}
-		int search();
+		mathdoubledec(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
+		//int search();
 		int evalue(const int v) const {return (v - value) < 0 ? -1 : (v - value);}
 		
-		stackM<math> mstack;
-		int index[3];
-		int number;
+		//stackM<math> mstack;
+		//int index[3];
+		//int number;
 };
 
-class mathdoublepuls: public mathbase
+class mathdoublepuls: public mathbase, public mathdoublebase
 {
 	public:
-		mathdoublepuls(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), number(n) {index[0]=va;index[1]=vb;index[2]=vc;}
-		int search();
+		mathdoublepuls(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
+		//int search();
 		int evalue(const int v) const {return v * value;}
 	
-		stackM<math> mstack;
-		int index[3];
-		int number;
+		//stackM<math> mstack;
+		//int index[3];
+		//int number;
 };
 
-class mathdoubledev: public mathbase
+class mathdoubledev: public mathbase, public mathdoublebase
 {
 	public:
-		mathdoubledev(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), number(n) {index[0]=va;index[1]=vb;index[2]=vc;}
-		int search();
+		mathdoubledev(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathbase::mathbase(-1, s), mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
+		//int search();
 		int evalue(const int v) const {return (v % value) == 0 ? (v / value) : -1;}
 
-		stackM<math> mstack;
-		int index[3];
-		int number;
+		//stackM<math> mstack;
+		//int index[3];
+		//int number;
 };
 
 class maxtren
