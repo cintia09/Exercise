@@ -12,6 +12,8 @@
 #include<memory>
 #include<vector>
 #include<string>
+#include"stackM.h"
+
 using namespace std;
 
 class mathbase
@@ -29,13 +31,14 @@ class mathbase
 class math
 {
 	public:
-		math() {}
-		math(shared_ptr<mathbase> m, int n = 1, int in1 = -1, int in2 = -1, int in3 = -1): mathp(m), next(nullptr) {index[0] = in1; index[1]=in2; index[2]=in3;}
+		math():mathp(nullptr) {}
+		math(shared_ptr<mathbase> m, string s = "", int n = 1, int in1 = -1, int in2 = -1, int in3 = -1): mathp(m), next(nullptr), number(n), str(s) {index[0] = in1; index[1]=in2; index[2]=in3;}
 		int evalue(const int value = 0) const {return mathp->evalue(value);}
 		shared_ptr<mathbase> mathp;
 		shared_ptr<math> next;
 		int index[3];
 		int number;
+		string str;
 };
 
 
@@ -78,7 +81,7 @@ class mathdoubleadd: public mathbase
 		int search();
 		int evalue(const int v) const {return v + value;}
 
-		//stackM<math> mstack;
+		stackM<math> mstack;
 		int index[3];
 		int number;
 };
@@ -90,7 +93,7 @@ class mathdoubledec: public mathbase
 		int search();
 		int evalue(const int v) const {return (v - value) < 0 ? -1 : (v - value);}
 		
-		//stackM<math> mstack;
+		stackM<math> mstack;
 		int index[3];
 		int number;
 };
@@ -102,7 +105,7 @@ class mathdoublepuls: public mathbase
 		int search();
 		int evalue(const int v) const {return v * value;}
 	
-		//stackM<math> mstack;
+		stackM<math> mstack;
 		int index[3];
 		int number;
 };
@@ -114,7 +117,7 @@ class mathdoubledev: public mathbase
 		int search();
 		int evalue(const int v) const {return (v % value) == 0 ? (v / value) : -1;}
 
-		//stackM<math> mstack;
+		stackM<math> mstack;
 		int index[3];
 		int number;
 };

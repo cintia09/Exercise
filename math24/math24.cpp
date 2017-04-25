@@ -137,11 +137,14 @@ maxtren::maxtren(const int number[])
 {
 	int i, j, k, l, m, flag;
 	char c[20];
-	shared_ptr<math> shadow;
+	weak_ptr<math> shadow;
 
 	for (i = 0;i < 4;++i)
 	{
-		mathp[i] = math(shared_ptr<mathbase>(new mathase), i);
+		sprintf(c, "%d", i);
+		string s(c);
+		mathp[i] = math(shared_ptr<mathbase>(new mathbase), s, 1, i);
+		//cout << "mathp[" << i << "]=" << mathp[i].number << endl;
 	}
 
 	k = i;
@@ -150,56 +153,95 @@ maxtren::maxtren(const int number[])
 		for (j = 0;j < 4;++j)
 			if (i != j)
 			{
-				mathp[k++] = math(shared_ptr<mathbase>(new mathbase), 2, i, j);
+				sprintf(c, "%d,%d", i,j);
+				string s(c);
+				mathp[k++] = math(shared_ptr<mathbase>(new mathbase), s, 2, i, j);
+				//cout << "mathp[" << k - 1 << "]=" << mathp[k-1].number << endl;
 				for (l = 0;l < 4;++l)
 					if (i != l && j != l)
-						mathp[k++] = math(shared_ptr<mathbase>(new mathbase), 3, i, j, l);
+					{
+						sprintf(c, "%d,%d,%d", i,j,l);
+						string s(c);
+						mathp[k++] = math(shared_ptr<mathbase>(new mathbase), s, 3, i, j, l);
+						//cout << "mathp[" << k - 1 << "]=" << mathp[k-1].number << endl;
+					}
+			}
 	
 	for (i = 0;i < k;++i)
 	{
-		shadow = mathp[i];
+		auto ptr = &mathp[i];
+		//shadow = ptr;
  		for (j = 0;j < k;++j)
 		{
-			flag = 0;
+			if (i == j)
+				continue;
 
-			for (l = 0;l < 3;++l)
-				for (m = 0;m < 3;++m)
+			flag = 0;
+			/*
+			cout << "mathp[" << i << "]=" << mathp[i].number << " " << mathp[i].str  << ", mathp[" << j << "]=" << mathp[j].number << " " << mathp[j].str;
+			cout << ", index I: ";
+			for (l = 0;l < mathp[i].number;++l)
+			{
+				cout << mathp[i].index[l] << " ";
+			}
+
+			cout << ", J: ";
+			for (l = 0;l < mathp[j].number;++l)
+			{
+				cout << mathp[j].index[l] << " ";
+			}
+			cout << endl;
+			*/
+			for (l = 0;l < mathp[i].number;++l)
+			{
+				for (m = 0;m < mathp[j].number;++m)
 					if (mathp[i].index[l] == mathp[j].index[m])
 					{
 						flag = 1;
 						break;
 					}
+
+				if (flag)
+					break;
+			}
 			
 			if (flag)
 				continue;
+			
+			//cout << "mathp[" << i << "]=" << mathp[i].number << " " << mathp[i].str  << ", mathp[" << j << "]=" << mathp[j].number << " " << mathp[j].str << endl;
+
+			//sprintf(c, "%d", number[j]);
+			//string s(c);
+
 			if (j < 4)
 			{
 				sprintf(c, "%d", number[j]);
 				string s(c);
-				shadow->next = make_shared<math>(shared_ptr<mathadd>(new mathadd(number[j], string("+"+s))), j);
-				shadow = shadow->next;
-				shadow->next = make_shared<math>(shared_ptr<mathdec>(new mathdec(number[j], string("-"+s))), j);
-				shadow = shadow->next;
-				shadow->next = make_shared<math>(shared_ptr<mathpuls>(new mathpuls(number[j], string("x"+s))), j);
-				shadow = shadow->next;
-				shadow->next = make_shared<math>(shared_ptr<mathdev>(new mathdev(number[j], string("/"+s))), j);
-				shadow = shadow->next;
+				ptr->next = make_shared<math>(shared_ptr<mathadd>(new mathadd(number[j], string("+"+s))), mathp[j].str, 1, j);
+				ptr = ptr->next.get();
+				ptr->next = make_shared<math>(shared_ptr<mathdec>(new mathdec(number[j], string("-"+s))), mathp[j].str, 1, j);
+				ptr = ptr->next.get();
+				ptr->next = make_shared<math>(shared_ptr<mathpuls>(new mathpuls(number[j], string("x"+s))), mathp[j].str, 1, j);
+				ptr = ptr->next.get();
+				ptr->next = make_shared<math>(shared_ptr<mathdev>(new mathdev(number[j], string("/"+s))), mathp[j].str, 1, j);
+				ptr = ptr->next.get();
 			}
 			else
 			{
-				shadow->next = make_shared<math>(shared_ptr<mathdoubleadd>(new mathdoubleadd("+", mathp[j].number, mathp[j].n[0], mathp[j].n[1], mathp[j].n[2])), j);
-				shadow = shadow->next;
-				shadow->next = make_shared<math>(shared_ptr<mathdoubledec>(new mathdoubledec("-", mathp[j].number, mathp[j].n[0], mathp[j].n[1], mathp[j].n[2])), j);
-				shadow = shadow->next;
-				shadow->next = make_shared<math>(shared_ptr<mathdoublepuls>(new mathdoublepuls("x", mathp[j].number, mathp[j].n[0], mathp[j].n[1], mathp[j].n[2])), j);
-				shadow = shadow->next;
-				shadow->next = make_shared<math>(shared_ptr<mathdoubledev>(new mathdoubledev("/", mathp[j].number, mathp[j].n[0], mathp[j].n[1], mathp[j].n[2])), j);
+				ptr->next = make_shared<math>(shared_ptr<mathdoubleadd>(new mathdoubleadd("+", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, 1, j);
+				ptr = ptr->next.get();
+				ptr->next = make_shared<math>(shared_ptr<mathdoubledec>(new mathdoubledec("-", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, 1, j);
+				ptr = ptr->next.get();
+				ptr->next = make_shared<math>(shared_ptr<mathdoublepuls>(new mathdoublepuls("x", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, 1, j);
+				ptr = ptr->next.get();
+				ptr->next = make_shared<math>(shared_ptr<mathdoubledev>(new mathdoubledev("/", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, 1, j);
+				ptr = ptr->next.get();
 			}
 		}
 	}
 }
 
-int main()
+int main(void)
 {
 	int number[4];
 	int i;
@@ -219,16 +261,19 @@ int main()
 	//for (auto &a: vec)
 	//	cout << a << endl;
 	
-	v = max.mathp[0].next;
-	for (i = 0;i < 100;++i)
+	//auto v = max.mathp[0].next;
+	i = 0;
+	while (max.mathp[i].mathp != nullptr)
 	{
-		v = max.mathp[i].next;
+		auto v = max.mathp[i].next;
+		cout << "mathp[" << i << "]: " << max.mathp[i].str << " -> ";
 		while (v != nullptr)
 		{
-			cout << v->index[0] << ", " <<  v.mathp->str << " --> ";
+			cout << v->str << ", " <<  v->mathp->str << " -> ";
 			v = v->next;
 		}
 		cout << endl << endl;
+		++i;
 	}
 
 	return 0;
