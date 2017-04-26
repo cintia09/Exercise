@@ -16,6 +16,8 @@
 
 using namespace std;
 
+class maxtren;
+
 class mathbase
 {
 	friend class math;
@@ -84,6 +86,7 @@ class mathdoublebase
 		stackM<shared_ptr<math>> mstack;
 		int index[3];
 		int number;
+		maxtren *max;
 };
 
 class mathdoubleadd: public mathbase, public mathdoublebase

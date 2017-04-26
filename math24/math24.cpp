@@ -163,8 +163,8 @@ maxtren::maxtren(const int number[])
 						sprintf(c, "%d,%d,%d", i,j,l);
 						string s(c);
 						mathp[k++] = math(shared_ptr<mathbase>(new mathbase), s, 3, i, j, l);
-						//cout << "mathp[" << k - 1 << "]=" << mathp[k-1].number << endl;
-					}
+					 	//cout << "mathp[" << k - 1 << "]=" << mathp[k-1].number << endl;
+					} 
 			}
 	
 	for (i = 0;i < k;++i)
@@ -198,11 +198,11 @@ maxtren::maxtren(const int number[])
 					if (mathp[i].index[l] == mathp[j].index[m])
 					{
 						flag = 1;
-						break;
-					}
+					 	break;
+					} 
 
 				if (flag)
-					break;
+					break; 
 			}
 			
 			if (flag)
@@ -252,10 +252,26 @@ int mathdoublebase::search()
 
 vector<string> search(maxtren &max)
 {
-	int i, ret;
+	int i = 0, ret;
 	vector<string> vec;
 	stackM<shared_ptr<math>> stack;
 	
+	auto in = max.mathp[0].next;
+	while (in != nullptr)
+	{
+		auto on = in->next;
+
+		while (on != nullptr)
+		{
+			if (on->number > 1)
+				on->mathp->max = &max;
+
+			on = on->next;
+		}
+
+		in = max.mathp[++i].next;
+	}
+
 	for (i = 0;i < 4;++i)
 	{
 		int node[100] = {0};
@@ -277,11 +293,15 @@ vector<string> search(maxtren &max)
 				while ((ptr != nullptr ) && ((ret = ptr->evalue(ret)) == -1))
 					ptr = ptr->next;
 
-				while (ptr != nullptr && node[ptr->index[0]])
+				while (ptr != nullptr)
+				{
+					node[ptr->index[0]]
 					ptr = ptr->next;
+				}
 
 				if (ptr == nullptr)
 				{
+					node[ptr->index[0]] = 0;
 					if (ret == 24)
 					{
 						while (!sstack.empty())
@@ -292,11 +312,12 @@ vector<string> search(maxtren &max)
 				}
 
 				//sstack.push(ptr->mathp->str);
+				node[ptr->index[0]] = 1;
 
 				if (ptr->mathp->number == 1)
 				{
 					stack.push(ptr->next);
-					node[ptr->index[0]] = 1;
+					//node[ptr->index[0]] = 1;
 					//s = s + ptr->mathp->str;
 					sstack.push(ptr->mathp->str);
 				}
