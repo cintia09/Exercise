@@ -23,13 +23,15 @@ class mathbase
 	friend class math;
 	public:
 		mathbase() {}
-		mathbase(const int v, const string &s): value(v), str(s) {}
+		mathbase(const int v, const string &s, int n = 1, int va = -1, int vb = -1, int vc = -1): value(v), str(s), number(n) {index[0] = va; index[1] = vb; index[2] = vc;}
 		virtual int evalue(const int) {return value;}
 		//void setstr(string &s) {str = s + str;}
 
 		int value;
 		string str;
 		maxtren *max;
+		int number;
+		int index[3];
 };
 
 class math
@@ -50,7 +52,7 @@ class mathadd: public mathbase
 {
 	public:
 		mathadd() {}
-		mathadd(const int v, const string &s):mathbase::mathbase(v, s) {}
+		mathadd(const int v, const string &s, int n = 1, int va = -1):mathbase::mathbase(v, s, n, va) {}
 		int evalue(const int v) {int get = v + value; cout << v << " + " << value << " = " << get << endl; return get;}
 };
 
@@ -58,7 +60,7 @@ class mathdec: public mathbase
 {
 	public:
 		mathdec() {}
-		mathdec(const int v, const string &s): mathbase::mathbase(v, s) {}
+		mathdec(const int v, const string &s, int n = 1, int va = -1): mathbase::mathbase(v, s, n, va) {}
 		int evalue(const int v) {int get = ((v - value) < 0 ? -1 : (v - value)); cout << v << " - " << value << " = " << get << endl; return get;}
 };
 
@@ -66,7 +68,7 @@ class mathpuls: public mathbase
 {
 	public:
 		mathpuls() {}
-		mathpuls(const int v, const string &s): mathbase::mathbase(v, s) {}
+		mathpuls(const int v, const string &s, int n = 1, int va = -1): mathbase::mathbase(v, s, n, va) {}
 		int evalue(const int v) {int get = v * value; cout << v << " x " << value << " = " << get << endl; return get;}
 };
 
@@ -74,7 +76,7 @@ class mathdev: public mathbase
 {
 	public:
 		mathdev() {}
-		mathdev(const int v, const string &s): mathbase::mathbase(v, s) {}
+		mathdev(const int v, const string &s, int n = 1, int va = -1): mathbase::mathbase(v, s, n, va) {}
 		int evalue(const int v) {int get = ((v % value) == 0 ? (v / value) : -1); cout << v << " / " << value << " = " << get << endl; return get;}
 };
 
@@ -82,12 +84,12 @@ class mathdoublebase: public mathbase
 {
 	public:
 		mathdoublebase() {}
-		mathdoublebase(const string &s, const int n, const int va, const int vb, const int vc): number(n), mathbase::mathbase(-1, s) {index[0] = va; index[1] = vb; index[2] = vc;}
+		mathdoublebase(const string &s, int n, int va, int vb, int vc): mathbase::mathbase(-1, s, n, va, vb, vc) {}
 		int search();
 		stackM<pair<shared_ptr<math>, int>> mstack;
 		stackM<string> sstack;
-		int index[3];
-		int number;
+		//int index[3];
+		//int number;
 		//maxtren *max;
 		int node[100];
 };
@@ -95,7 +97,7 @@ class mathdoublebase: public mathbase
 class mathdoubleadd: public mathdoublebase
 {
 	public:
-		mathdoubleadd(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
+		mathdoubleadd(const string &s, int n = 1, int va = -1, int vb = -1, int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
 		//int search();
 		int evalue(const int v) {int ret, get; if((ret = search()) != -1) get = v + ret; else get = ret; cout << str << " search is: " << v << " + " << ret << " = " << get << endl; return get;}
 
@@ -107,7 +109,7 @@ class mathdoubleadd: public mathdoublebase
 class mathdoubledec: public mathdoublebase
 {
 	public:
-		mathdoubledec(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
+		mathdoubledec(const string &s, int n = 1, int va = -1, int vb = -1, int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
 		//int search();
 		int evalue(const int v) {int ret, get; while (((ret = search()) != -1) && (ret > v)); get = (ret == -1 ? ret : (v - ret)); cout << str << " search is: " << v << " x " << ret << " = " << get << endl; return get;}
 		
@@ -119,7 +121,7 @@ class mathdoubledec: public mathdoublebase
 class mathdoublepuls: public mathdoublebase
 {
 	public:
-		mathdoublepuls(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
+		mathdoublepuls(const string &s, int n = 1, int va = -1, int vb = -1, int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
 		//int search();
 		int evalue(const int v) {int ret, get; if((ret = search()) != -1) get = v * ret; else get = ret; cout << str << " search is: " << v << " x " << ret << " = " << get << endl; return get;}
 	
@@ -131,7 +133,7 @@ class mathdoublepuls: public mathdoublebase
 class mathdoubledev: public mathdoublebase
 {
 	public:
-		mathdoubledev(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
+		mathdoubledev(const string &s, int n = 1, int va = -1, int vb = -1, int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
 		//int search();
 		int evalue(const int v) {int ret, get; while (((ret = search()) != -1) && (v % ret != 0)) ; get = (ret == -1 ? ret : (v % ret)); cout << str << " search is: " << v << " / " << ret << " = " << get << endl; return get;}
 
@@ -148,6 +150,6 @@ class maxtren
 		math mathp[100];
 };
 
-
+int check_visited(math * mathp, int node[]);
 
 #endif

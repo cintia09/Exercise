@@ -165,8 +165,8 @@ maxtren::maxtren(const int number[])
 						sprintf(c, "%d,%d,%d", i,j,l);
 						string s(c);
 						mathp[k++] = math(shared_ptr<mathbase>(new mathbase), s, 3, i, j, l);
-					 	//cout << "mathp[" << k - 1 << "]=" << mathp[k-1].number << endl;
-					} 
+					  	//cout << "mathp[" << k - 1 << "]=" << mathp[k-1].number << endl;
+					}  
 			}
 	
 	for (i = 0;i < k;++i)
@@ -200,11 +200,11 @@ maxtren::maxtren(const int number[])
 					if (mathp[i].index[l] == mathp[j].index[m])
 					{
 						flag = 1;
-					 	break;
-					} 
+					  	break;
+					}  
 
 				if (flag)
-					break; 
+					break;  
 			}
 			
 			if (flag)
@@ -219,24 +219,24 @@ maxtren::maxtren(const int number[])
 			{
 				sprintf(c, "%d", number[j]);
 				string s(c);
-				ptr->next = make_shared<math>(shared_ptr<mathadd>(new mathadd(number[j], string("+"+s))), mathp[j].str, 1, j);
+				ptr->next = make_shared<math>(shared_ptr<mathadd>(new mathadd(number[j], string("+"+s), 1, j)), mathp[j].str, 1, j);
 				ptr = ptr->next.get();
-				ptr->next = make_shared<math>(shared_ptr<mathdec>(new mathdec(number[j], string("-"+s))), mathp[j].str, 1, j);
+				ptr->next = make_shared<math>(shared_ptr<mathdec>(new mathdec(number[j], string("-"+s), 1, j)), mathp[j].str, 1, j);
 				ptr = ptr->next.get();
-				ptr->next = make_shared<math>(shared_ptr<mathpuls>(new mathpuls(number[j], string("x"+s))), mathp[j].str, 1, j);
+				ptr->next = make_shared<math>(shared_ptr<mathpuls>(new mathpuls(number[j], string("x"+s), 1, j)), mathp[j].str, 1, j);
 				ptr = ptr->next.get();
-				ptr->next = make_shared<math>(shared_ptr<mathdev>(new mathdev(number[j], string("/"+s))), mathp[j].str, 1, j);
+				ptr->next = make_shared<math>(shared_ptr<mathdev>(new mathdev(number[j], string("/"+s), 1, j)), mathp[j].str, 1, j);
 				ptr = ptr->next.get();
 			}
 			else
 			{
-				ptr->next = make_shared<math>(shared_ptr<mathdoubleadd>(new mathdoubleadd("+", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, 1, j);
+				ptr->next = make_shared<math>(shared_ptr<mathdoubleadd>(new mathdoubleadd("+", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, mathp[j].number, j);
 				ptr = ptr->next.get();
-				ptr->next = make_shared<math>(shared_ptr<mathdoubledec>(new mathdoubledec("-", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, 1, j);
+				ptr->next = make_shared<math>(shared_ptr<mathdoubledec>(new mathdoubledec("-", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, mathp[j].number, j);
 				ptr = ptr->next.get();
-				ptr->next = make_shared<math>(shared_ptr<mathdoublepuls>(new mathdoublepuls("x", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, 1, j);
+				ptr->next = make_shared<math>(shared_ptr<mathdoublepuls>(new mathdoublepuls("x", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, mathp[j].number, j);
 				ptr = ptr->next.get();
-				ptr->next = make_shared<math>(shared_ptr<mathdoubledev>(new mathdoubledev("/", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, 1, j);
+				ptr->next = make_shared<math>(shared_ptr<mathdoubledev>(new mathdoubledev("/", mathp[j].number, mathp[j].index[0], mathp[j].index[1], mathp[j].index[2])), mathp[j].str, mathp[j].number, j);
 				ptr = ptr->next.get();
 			}
 		}
@@ -409,8 +409,11 @@ vector<string> search(maxtren &max)
 			auto ptr = pa.first;
 			if (!sstack.empty())
 				s = sstack.pop();
+			else
+				s = "";
 
 			flag = 0;
+			cout << "pop stack str " << s << endl;
 
 			if (ptr != nullptr)
 			{
@@ -419,6 +422,8 @@ vector<string> search(maxtren &max)
 					node[ptr->index[0]] = 0;
 				//vv = ptr->index[0];
 			}
+			else
+				node[pa.second] = 0;
 
 			//ret = pa.second;
 			//prevalue = ret;
@@ -427,11 +432,11 @@ vector<string> search(maxtren &max)
 			{
 				if (ptr != nullptr)
 				{ 
-					//cout << "1 next node[" <<  ptr->next->index[0] << "] is " << node[ptr->next->index[0]] <<endl;
+ 					//cout << "1 next node[" <<  ptr->next->index[0] << "] is " << node[ptr->next->index[0]] <<endl;
 				 	//flag = 0;
 					if (node[ptr->index[0]])
 					{
-				 		ptr = ptr->next;
+ 				 		ptr = ptr->next;
 						while (ptr->next != nullptr && node[ptr->next->index[0]])
 							ptr = ptr->next;
 						stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
@@ -466,9 +471,20 @@ vector<string> search(maxtren &max)
 					if (ret == -1)
 					{
 						//ptr = ptr->next;
-						while (ptr->next != nullptr && node[ptr->next->index[0]])
+						while (ptr->next != nullptr && check_visited(ptr->next.get(), node))
 							ptr = ptr->next;
-						stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
+						if (ptr->next == nullptr)
+						{
+							cout << "push stack null" << ptr->index[0] << endl;
+							stack.push(pair<shared_ptr<math>, int>(ptr->next, ptr->index[0]));
+						}
+						else
+						{
+							cout << "push stack " << pa.second << endl;
+							stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
+						}
+						sstack.push(s);
+						cout << "push stack str" << s << endl;
 						continue;
 					}
 					//else
@@ -504,10 +520,20 @@ vector<string> search(maxtren &max)
 				{
 					//node[ptr->index[0]] = 1;
 					cout << ptr->next->index[0] << " " << ptr->index[0] << " "<< node[ptr->next->index[0]] << " " << node[ptr->index[0]] << endl;
-					while (ptr->next != nullptr && node[ptr->next->index[0]])
+					//while (ptr->next != nullptr && node[ptr->next->index[0]])
+					while (ptr->next != nullptr && check_visited(ptr->next.get(), node))
 						ptr = ptr->next;
-					stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
-					node[ptr->index[0]] = 1;
+					if (ptr->next == nullptr)
+					{
+						cout << "push stack null" << ptr->index[0] << endl;
+						stack.push(pair<shared_ptr<math>, int>(ptr->next, ptr->index[0]));
+					}
+					else
+					{
+						cout << "push stack " << pa.second << endl;
+						stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
+					}
+					//node[ptr->index[0]] = 1;
 					//sstack.push(ptr->mathp->str);
 					//cout << "in stack: " << ptr->next->mathp->str << endl; 
 				}
@@ -518,15 +544,18 @@ vector<string> search(maxtren &max)
 					//cout << "in stack: " << "(" + ptr->next->mathp->str + ")" << endl;
 				}
 				
-				//s = "(" + s + ptr->mathp->str + ")";
+				node[ptr->index[0]] = 1;
 				sstack.push(s);
 				s = "(" + s + ptr->mathp->str + ")";
+				sstack.push(s);
+				cout << "push stack str " << s << endl;
+				//s = "(" + s + ptr->mathp->str + ")";
 
 				//prevalue = ret;
 				//ptr = max.mathp[ptr->index[0]].next;
 
 				ptr = max.mathp[ptr->index[0]].next;
-				while (ptr != nullptr && node[ptr->index[0]])
+				while (ptr != nullptr && check_visited(ptr.get(), node))
 					ptr = ptr->next;
 
 				stack.push(pair<shared_ptr<math>, int>(ptr, ret));
@@ -535,6 +564,25 @@ vector<string> search(maxtren &max)
 	
 
 	return vec;
+}
+
+int check_visited(math * mathp, int node[])
+{
+	int i;
+
+	if (node[mathp->index[0]])
+		return -1;
+	
+	if (mathp->mathp->number == 1)
+		return 0;
+
+	for (i = 0;i < mathp->mathp->number;++i)
+	{
+		if (node[mathp->mathp->index[i]])
+			return -1;
+	}
+
+	return 0;
 }
 
 int main(void)
