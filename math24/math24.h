@@ -84,7 +84,8 @@ class mathdoublebase: public mathbase
 		mathdoublebase() {}
 		mathdoublebase(const string &s, const int n, const int va, const int vb, const int vc): number(n), mathbase::mathbase(-1, s) {index[0] = va; index[1] = vb; index[2] = vc;}
 		int search();
-		stackM<shared_ptr<math>> mstack;
+		stackM<pair<shared_ptr<math>, int>> mstack;
+		stackM<string> sstack;
 		int index[3];
 		int number;
 		//maxtren *max;
@@ -96,7 +97,7 @@ class mathdoubleadd: public mathdoublebase
 	public:
 		mathdoubleadd(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
 		//int search();
-		int evalue(const int v) {int ret, get; if((ret = search()) != -1) ret = v + ret; cout << "search is: " << v << " + " << ret << " = " << get << endl; return get;}
+		int evalue(const int v) {int ret, get; if((ret = search()) != -1) get = v + ret; else get = ret; cout << str << " search is: " << v << " + " << ret << " = " << get << endl; return get;}
 
 		//stackM<math> mstack;
 		//int index[3];
@@ -108,7 +109,7 @@ class mathdoubledec: public mathdoublebase
 	public:
 		mathdoubledec(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
 		//int search();
-		int evalue(const int v) {int ret, get; while (((ret = search()) != -1) && (ret > v)) ; get = (ret == -1 ? ret : (v - ret)); cout << "search is: " << v << " x " << ret << " = " << get << endl; return get;}
+		int evalue(const int v) {int ret, get; while (((ret = search()) != -1) && (ret > v)); get = (ret == -1 ? ret : (v - ret)); cout << str << " search is: " << v << " x " << ret << " = " << get << endl; return get;}
 		
 		//stackM<math> mstack;
 		//int index[3];
@@ -120,7 +121,7 @@ class mathdoublepuls: public mathdoublebase
 	public:
 		mathdoublepuls(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
 		//int search();
-		int evalue(const int v) {int ret, get; if((ret = search()) != -1) get = v * ret; cout << "search is: " << v << " x " << ret << " = " << get << endl; return get;}
+		int evalue(const int v) {int ret, get; if((ret = search()) != -1) get = v * ret; else get = ret; cout << str << " search is: " << v << " x " << ret << " = " << get << endl; return get;}
 	
 		//stackM<math> mstack;
 		//int index[3];
@@ -132,7 +133,7 @@ class mathdoubledev: public mathdoublebase
 	public:
 		mathdoubledev(const string &s, const int n = 1, const int va = -1, const int vb = -1, const int vc = -1): mathdoublebase::mathdoublebase(s, n, va, vb, vc) {}
 		//int search();
-		int evalue(const int v) {int ret, get; while (((ret = search()) != -1) && (v % ret != 0)) ; get = (ret == -1 ? ret : (v % ret)); cout << "search is: " << v << " / " << ret << " = " << get << endl; return get;}
+		int evalue(const int v) {int ret, get; while (((ret = search()) != -1) && (v % ret != 0)) ; get = (ret == -1 ? ret : (v % ret)); cout << str << " search is: " << v << " / " << ret << " = " << get << endl; return get;}
 
 		//stackM<math> mstack;
 		//int index[3];

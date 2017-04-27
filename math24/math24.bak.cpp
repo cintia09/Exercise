@@ -245,9 +245,9 @@ maxtren::maxtren(const int number[])
 
 int mathdoublebase::search()
 {
-	int i = 0, ret, k, flag = 0, pre = -1, prevalue = -1, ppv = -1;
+	int i = 0, ret, k, flag = 0, pre = -1;
 	string s;
-	//stackM<string> sstack;
+	stackM<string> sstack;
 
 	if (!mstack.empty())
 	{
@@ -267,20 +267,15 @@ int mathdoublebase::search()
 		}
 
 		ret = max->mathp[index[0]].evalue();
-		mstack.push(pair<shared_ptr<math>, int>(max->mathp[index[0]].next, ret));
-		sstack.push(max->mathp[0].mathp->str);
+		mstack.push(max->mathp[index[0]].next);
 	}
 
 	while (!mstack.empty())
 	{
-		auto pa = mstack.pop();
-		auto ptr = pa.first;
+		auto ptr = mstack.pop();
 		if (!sstack.empty())
 			sstack.pop();
 			
-		ret = pa.second;
-		prevalue = ret;
-
 		while (1)
 		{
 			while (ptr != nullptr)
@@ -308,15 +303,8 @@ int mathdoublebase::search()
 				 	break;
 			}
 
-			ppv =ret;
-			while (ptr != nullptr )
-			{
-				ret = ptr->evalue(ret);
-				if (ret == -1)
-					ptr = ptr->next;
-				else
-					break;
-			}
+			while ((ptr != nullptr ) && ((ret = ptr->evalue(ret)) == -1))
+				ptr = ptr->next;
 
 			if (ptr == nullptr)
 			{
@@ -324,15 +312,15 @@ int mathdoublebase::search()
 					node[pre] = 0;
 				//if (ret == 24)
 				{
-					//while (!sstack.empty())
-					//	s = sstack.pop() + s;
-					str = s;
+					while (!sstack.empty())
+						s = sstack.pop() + s;
+					str = max->mathp[index[0]].mathp->str + s;
 					cout << "in result: " << str << endl;
-					//vec.p u sh_back(max.mathp[i].mathp->str + s);
+					//vec.pu sh_back(max.mathp[i].mathp->str + s);
 		
 				}
 			
-				return ppv; 
+				return ret; 
 			}
 
 			node[ptr->index[0]] = 1;
@@ -340,21 +328,17 @@ int mathdoublebase::search()
 
 			if (ptr->number == 1)
 			{
-				mstack.push(pair<shared_ptr<math>, int>(ptr->next, prevalue));
-				//sstack.push(ptr->mathp->str);
-				//cout << "in search: " << ptr->mathp->str << endl;
+				mstack.push(ptr->next);
+				sstack.push(ptr->mathp->str);
+				cout << "in search: " << ptr->mathp->str << endl;
 			}
 			else
 			{
-				mstack.push(pair<shared_ptr<math>, int>(ptr, prevalue));
-				//sstack.push("("  + ptr->mathp->str + ")");
-				//cout << "in search: " << "(" + ptr->mathp->str + ")" << endl;
+				mstack.push(ptr);
+				sstack.push("("  + ptr->mathp->str + ")");
+				cout << "in search: " << "(" + ptr->mathp->str + ")" << endl;
 			}
 
-			sstack.push(s);
-			s = "(" + s + ptr->mathp->str + ")";
-
-			 prevalue = ret;
 			ptr = max->mathp[ptr->index[0]].next;
 		}
 	}
@@ -393,7 +377,6 @@ vector<string> search(maxtren &max)
 		string s;
 		pre = -1;
 		prevalue = -1;
-		//int vv = -2;
 
 		node[i] = 1;
 		ret = max.mathp[i].evalue();
@@ -410,91 +393,69 @@ vector<string> search(maxtren &max)
 			if (!sstack.empty())
 				s = sstack.pop();
 
-			flag = 0;
+			ret = pa.second;
+			prevalue = ret;
 
-			if (ptr != nullptr)
+			while (1)
 			{
-				cout << "out stack: " << ptr->mathp->str << ", node[" << ptr->index[0] << "]: " << node[ptr->index[0]] << endl;
-				//if (vv == ptr->index[0])
-					node[ptr->index[0]] = 0;
-				//vv = ptr->index[0];
-			}
-
-			//ret = pa.second;
-			//prevalue = ret;
-/*
-			//while (1)
-			{
-				if (ptr != nullptr)
+				while (ptr != nullptr)
 				{ 
-					//cout << "1 next node[" <<  ptr->next->index[0] << "] is " << node[ptr->next->index[0]] <<endl;
-				 	//flag = 0;
+					//cout << "1 node[" <<  ptr->index[0] << "] is " << node[ptr->index[0]] <<endl;
+				 	flag = 0;
 					if (node[ptr->index[0]])
 					{
 				 		ptr = ptr->next;
-						while (ptr->next != nullptr && node[ptr->next->index[0]])
-							ptr = ptr->next;
-						stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
 						continue;
 					}
 
-					//cout << "2 next node[" <<  ptr->next->index[0] << "] is " << node[ptr->next->index[0]] <<endl;
+					//cout << "2 node[" <<  ptr->index[0] << "] is " << node[ptr->index[0]] <<endl;
 
 					auto p = max.mathp[ptr->index[0]];
 					for (auto k = 0;k < p.number;++k)
 					{
 				 		if (node[p.index[k]])
 						{
-							while (ptr->next != nullptr && node[ptr->next->index[0]])
-								ptr = ptr->next;
-							flag = 1;
-							stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
-						 	break;
-						} 
+				 			flag = 1;
+							break;
+						}
 					}
 
 					if (flag)
-						continue;
-					//else
-					//	break;
+						ptr = ptr->next;
+					else
+						break;
 				}
-*/
-				//ppv = ret;
-				if (ptr != nullptr )
+
+				ppv = ret;
+				while (ptr != nullptr )
 				{
-					ret = ptr->evalue(pa.second);
+					
+					ret = ptr->evalue(ppv);
 					if (ret == -1)
-					{
-						//ptr = ptr->next;
-						while (ptr->next != nullptr && node[ptr->next->index[0]])
-							ptr = ptr->next;
-						stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
-						continue;
-					}
-					//else
-					//	break; 
+						ptr = ptr->next;
+					else
+						break;
 				}
 				
 				if (ptr == nullptr)
 				{
-				 	//if (pre != -1)
-					//	node[pre] = 0;
-					if (pa.second == 24)
+				 	if (pre != -1)
+						node[pre] = 0;
+					if (ppv == 24)
 					{
 				 		//while (!sstack.empty())
 						//	s = sstack.pop() + s;
 						vec.push_back(s);
-						cout << "= ==================================   ";
+						cout << "===================================   ";
 					}
 
 					cout << "result: " << s << " = " << ret << endl << endl;
-					//break;
-					continue;
-					//return vec; 
+					break; 
+					//return vec;
 				}
 
-				//node[ptr->index[0]] = 1;
-				//pre = ptr->index[0];
+				node[ptr->index[0]] = 1;
+				pre = ptr->index[0];
 
 				//cout << "3 node[" <<  ptr->index[0] << "] is " << node[ptr->index[0]] << endl;
 				//if (pre != -1)
@@ -502,37 +463,26 @@ vector<string> search(maxtren &max)
 
 				if (ptr->number == 1)
 				{
-					//node[ptr->index[0]] = 1;
-					cout << ptr->next->index[0] << " " << ptr->index[0] << " "<< node[ptr->next->index[0]] << " " << node[ptr->index[0]] << endl;
-					while (ptr->next != nullptr && node[ptr->next->index[0]])
-						ptr = ptr->next;
-					stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
-					node[ptr->index[0]] = 1;
+					stack.push(pair<shared_ptr<math>, int>(ptr->next, prevalue));
 					//sstack.push(ptr->mathp->str);
-					//cout << "in stack: " << ptr->next->mathp->str << endl; 
+					//cout << "search: " << ptr->mathp->str << endl;
 				}
 				else
 				{
-					stack.push(pair<shared_ptr<math>, int>(ptr, pa.second)); 
+					stack.push(pair<shared_ptr<math>, int>(ptr, prevalue));
 					//sstack.push("(" + ptr->mathp->str + ")");
-					//cout << "in stack: " << "(" + ptr->next->mathp->str + ")" << endl;
+					//cout << "search: " << "(" + ptr->mathp->str + ")" << endl;
 				}
 				
 				//s = "(" + s + ptr->mathp->str + ")";
 				sstack.push(s);
 				s = "(" + s + ptr->mathp->str + ")";
 
-				//prevalue = ret;
-				//ptr = max.mathp[ptr->index[0]].next;
-
-				ptr = max.mathp[ptr->index[0]].next;
-				while (ptr != nullptr && node[ptr->index[0]])
-					ptr = ptr->next;
-
-				stack.push(pair<shared_ptr<math>, int>(ptr, ret));
+				prevalue = ret;
+				ptr = max.mathp [ptr->index[0]].next;
 			}
 		}
-	
+	}
 
 	return vec;
 }
@@ -547,7 +497,7 @@ int main(void)
 
 	maxtren max(number);
 
-	
+	/*
 	i = 0;
 	while (max.mathp[i].mathp != nullptr)
 	{
@@ -566,7 +516,7 @@ int main(void)
 	for (auto &j: number)
 		cout << j << " ";
 	cout << endl;
-	
+	*/
 	
 	vector<string> vec(search(max)); 
 
