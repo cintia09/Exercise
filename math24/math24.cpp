@@ -366,7 +366,7 @@ int mathdoublebase::search()
 
 vector<string> search(maxtren &max)
 {
-	int i = 0, ret, flag = 0, pre = -1, prevalue = -1, ppv = -1;
+	int i = 0, ret;
 	vector<string> vec;
 	stackM<pair<shared_ptr<math>, int>> stack;
 	
@@ -391,17 +391,13 @@ vector<string> search(maxtren &max)
 		int node[100] = {0};
 		stackM<string> sstack;
 		string s;
-		pre = -1;
-		prevalue = -1;
-		//int vv = -2;
 
 		node[i] = 1;
 		ret = max.mathp[i].evalue();
 		stack.push(pair<shared_ptr<math>, int>(max.mathp[i].next, ret));
 		sstack.push(max.mathp[i].mathp->str);
 
-		//sn = max.mathp[i].mathp->str;
-		//sp = sn;
+		cout << endl << "===============The " << i << " loop from " << ret << " =======================" << endl<<endl;
 
 		while (!stack.empty())
 		{
@@ -412,157 +408,120 @@ vector<string> search(maxtren &max)
 			else
 				s = "";
 
-			flag = 0;
 			cout << "pop stack str " << s << endl;
 
 			if (ptr != nullptr)
 			{
-				cout << "out stack: " << ptr->mathp->str << ", node[" << ptr->index[0] << "]: " << node[ptr->index[0]] << endl;
-				//if (vv == ptr->index[0])
-					node[ptr->index[0]] = 0;
-				//vv = ptr->index[0];
+				if (ptr->mathp->number > 1)
+					cout << "-------Its complex node -------" << endl;
+				cout << "out stack: " << ptr->mathp->str << ", Set node[" << ptr->index[0] << "]: " << 0 << ", max.mathp[ptr->index[0]].number: " << max.mathp[ptr->index[0]].number << endl;
+				if (max.mathp[ptr->index[0]].number > 1)
+				{
+					for (i = 0;i < ptr->mathp->number;++i)
+						node[ptr->mathp->index[i]] = 0;
+						//node[max.mathp[ptr->index[0]].index[i]] = 0;
+				}
+				node[ptr->index[0]] = 0;
 			}
 			else
-				node[pa.second] = 0;
-
-			//ret = pa.second;
-			//prevalue = ret;
-/*
-			//while (1)
 			{
-				if (ptr != nullptr)
-				{ 
- 					//cout << "1 next node[" <<  ptr->next->index[0] << "] is " << node[ptr->next->index[0]] <<endl;
-				 	//flag = 0;
-					if (node[ptr->index[0]])
-					{
- 				 		ptr = ptr->next;
-						while (ptr->next != nullptr && node[ptr->next->index[0]])
-							ptr = ptr->next;
-						stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
-						continue;
-					}
-
-					//cout << "2 next node[" <<  ptr->next->index[0] << "] is " << node[ptr->next->index[0]] <<endl;
-
-					auto p = max.mathp[ptr->index[0]];
-					for (auto k = 0;k < p.number;++k)
-					{
-				 		if (node[p.index[k]])
-						{
-							while (ptr->next != nullptr && node[ptr->next->index[0]])
-								ptr = ptr->next;
-							flag = 1;
-							stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
-						 	break;
-						} 
-					}
-
-					if (flag)
-						continue;
-					//else
-					//	break;
-				}
-*/
-				//ppv = ret;
-				if (ptr != nullptr )
+				cout << "out stack is NULL: Set  node[" << pa.second << "]: " << 0 << ", max.mathp[pa.second].number: " << max.mathp[pa.second].number << endl;
+				if (pa.second != -2)
 				{
-					ret = ptr->evalue(pa.second);
-					if (ret == -1)
+					if (max.mathp[pa.second].number > 1)
 					{
-						//ptr = ptr->next;
-						while (ptr->next != nullptr && check_visited(ptr->next.get(), node))
-							ptr = ptr->next;
-						if (ptr->next == nullptr)
-						{
-							cout << "push stack null" << ptr->index[0] << endl;
-							stack.push(pair<shared_ptr<math>, int>(ptr->next, ptr->index[0]));
-						}
-						else
-						{
-							cout << "push stack " << pa.second << endl;
-							stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
-						}
-						sstack.push(s);
-						cout << "push stack str" << s << endl;
-						continue;
+						for (i = 0;i < max.mathp[pa.second].number;++i)
+							node[max.mathp[pa.second].index[i]] = 0;
 					}
-					//else
-					//	break; 
+					node[pa.second] = 0;
 				}
+			}
+
+			if (ptr != nullptr )
+			{
+				ret = ptr->evalue(pa.second);
+				if (ret == -1)
+				{
+					auto pptr = ptr;
+					while (pptr->next != nullptr && check_visited(pptr->next.get(), node))
+						pptr = pptr->next;
+					if (pptr->next == nullptr)
+					{
+						cout << "push stack null: " << ptr->index[0] << endl;
+						stack.push(pair<shared_ptr<math>, int>(pptr->next, ptr->index[0]));
+					}
+					else
+					{
+						cout << "push stack: " << pa.second << endl;
+						stack.push(pair<shared_ptr<math>, int>(pptr->next, pa.second));
+					}
+
+					sstack.push(s);
+					cout << "push stack str" << s << endl;
+					continue;
+				}
+			}
 				
-				if (ptr == nullptr)
+			if (ptr == nullptr) 
+			{
+				if (pa.second == -2)
 				{
-				 	//if (pre != -1)
-					//	node[pre] = 0;
-					if (pa.second == 24)
+					if (ret == 24)
 					{
-				 		//while (!sstack.empty())
-						//	s = sstack.pop() + s;
 						vec.push_back(s);
 						cout << "= ==================================   ";
 					}
 
 					cout << "result: " << s << " = " << ret << endl << endl;
-					//break;
-					continue;
-					//return vec; 
 				}
+				continue;
+			}
 
-				//node[ptr->index[0]] = 1;
-				//pre = ptr->index[0];
-
-				//cout << "3 node[" <<  ptr->index[0] << "] is " << node[ptr->index[0]] << endl;
-				//if (pre != -1)
-				//	cout <<"4 pre node[" <<  pre << "] is " << node[pre] <<endl;
-
-				if (ptr->number == 1)
+			if (ptr->number == 1)
+			{
+				cout << ptr->next->index[0] << " " << ptr->index[0] << " "<< node[ptr->next->index[0]] << " " << node[ptr->index[0]] << endl;
+				
+				auto pptr = ptr;
+				while (pptr->next != nullptr && check_visited(pptr->next.get(), node))
+					pptr = pptr->next;
+				if (pptr->next == nullptr)
 				{
-					//node[ptr->index[0]] = 1;
-					cout << ptr->next->index[0] << " " << ptr->index[0] << " "<< node[ptr->next->index[0]] << " " << node[ptr->index[0]] << endl;
-					//while (ptr->next != nullptr && node[ptr->next->index[0]])
-					while (ptr->next != nullptr && check_visited(ptr->next.get(), node))
-						ptr = ptr->next;
-					if (ptr->next == nullptr)
-					{
-						cout << "push stack null" << ptr->index[0] << endl;
-						stack.push(pair<shared_ptr<math>, int>(ptr->next, ptr->index[0]));
-					}
-					else
-					{
-						cout << "push stack " << pa.second << endl;
-						stack.push(pair<shared_ptr<math>, int>(ptr->next, pa.second));
-					}
-					//node[ptr->index[0]] = 1;
-					//sstack.push(ptr->mathp->str);
-					//cout << "in stack: " << ptr->next->mathp->str << endl; 
+					cout << "push stack null: " << ptr->index[0] << endl;
+					stack.push(pair<shared_ptr<math>, int>(pptr->next, ptr->index[0]));
 				}
 				else
 				{
-					stack.push(pair<shared_ptr<math>, int>(ptr, pa.second)); 
-					//sstack.push("(" + ptr->mathp->str + ")");
-					//cout << "in stack: " << "(" + ptr->next->mathp->str + ")" << endl;
+					cout << "push stack: " << pa.second << endl;
+					stack.push(pair<shared_ptr<math>, int>(pptr->next, pa.second));
 				}
-				
-				node[ptr->index[0]] = 1;
-				sstack.push(s);
-				s = "(" + s + ptr->mathp->str + ")";
-				sstack.push(s);
-				cout << "push stack str " << s << endl;
-				//s = "(" + s + ptr->mathp->str + ")";
-
-				//prevalue = ret;
-				//ptr = max.mathp[ptr->index[0]].next;
-
-				ptr = max.mathp[ptr->index[0]].next;
-				while (ptr != nullptr && check_visited(ptr.get(), node))
-					ptr = ptr->next;
-
-				stack.push(pair<shared_ptr<math>, int>(ptr, ret));
 			}
-		}
-	
+			else
+				stack.push(pair<shared_ptr<math>, int>(ptr, pa.second)); 
+				
+			node[ptr->index[0]] = 1;
+			for (i = 0;i < ptr->mathp->number;++i)
+				node[ptr->mathp->index[i]] = 1;
 
+			cout << "Set node[" << ptr->index[0] << "]: " << node[ptr->index[0]] << endl;
+
+			sstack.push(s);
+			s = "(" + s + ptr->mathp->str + ")";
+			sstack.push(s);
+			//cout << "push stack str " << s << endl;
+
+			ptr = max.mathp[ptr->index[0]].next;
+			while (ptr != nullptr && check_visited(ptr.get(), node))
+				ptr = ptr->next;
+
+			cout << "push stack: " << (ptr == nullptr ? -1 : ptr->index[0]) << endl;
+
+			if (ptr == nullptr)
+				stack.push(pair<shared_ptr<math>, int>(ptr, -2));
+			else
+				stack.push(pair<shared_ptr<math>, int>(ptr, ret));
+		}
+	}
+	
 	return vec;
 }
 
@@ -570,6 +529,7 @@ int check_visited(math * mathp, int node[])
 {
 	int i;
 
+	cout << "check node[" << mathp->index[0] <<"]: " << node[mathp->index[0]] << endl;
 	if (node[mathp->index[0]])
 		return -1;
 	
@@ -578,9 +538,11 @@ int check_visited(math * mathp, int node[])
 
 	for (i = 0;i < mathp->mathp->number;++i)
 	{
+		cout << "check complex node[" << mathp->mathp->index[i] <<"]: " << node[mathp->mathp->index[i]] << endl;
 		if (node[mathp->mathp->index[i]])
 			return -1;
 	}
+	cout << "check end" << endl;
 
 	return 0;
 }
